@@ -1,0 +1,5 @@
+Django==3.2.10
+mysqlclient
+django-ckeditor==6.2.0
+gunicorn
+django-cors-headers

@@ -1,0 +1,48 @@
+# pull official base image
+FROM python:3.7
+
+WORKDIR /usr/src/vio
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN pip install --upgrade pip
+
+RUN apt-get update && apt-get install -y gcc python3-dev musl-dev \
+    default-libmysqlclient-dev
+RUN pip install Pillow
+
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
+# create directory for the app user
+RUN mkdir -p /home/vio
+
+# create the app user
+RUN useradd vio && usermod vio -a -G vio
+
+# create the appropriate directories
+ENV HOME=/home/vio
+ENV APP_HOME=/home/vio/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+WORKDIR $APP_HOME
+
+# copy entrypoint-prod.sh
+COPY ./entrypoint.prod.sh $APP_HOME
+
+# copy project
+COPY . $APP_HOME
+
+WORKDIR $APP_HOME/vio
+
+# chown all the files to the app user
+#RUN chown -R vio:vio $APP_HOME
+
+# change to the app user
+#USER vio
+
+# run entrypoint.prod.sh
+ENTRYPOINT ["/home/vio/web/entrypoint.prod.sh"]
+
