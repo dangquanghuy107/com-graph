@@ -24,7 +24,7 @@ urlpatterns = [
     path('api/question', get_question, name='get-questions'),
     path('api/option', get_option, name='get-options'),
     path('api/test_info', get_test_info, name='get-test-infos'),
-    re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    path('api/ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:
